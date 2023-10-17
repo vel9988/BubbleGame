@@ -14,6 +14,7 @@
 		EAE75B492ADE9A4C00680B3E /* MenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE75B482ADE9A4C00680B3E /* MenuVC.swift */; };
 		EAE75B4C2ADE9B3100680B3E /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = EAE75B4B2ADE9B3100680B3E /* SnapKit */; };
 		EAE75B502ADEADAC00680B3E /* GameVС.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE75B4F2ADEADAC00680B3E /* GameVС.swift */; };
+		EAE75B522ADEC8BE00680B3E /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE75B512ADEC8BE00680B3E /* GameViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		EAE75B3C2ADE7D6D00680B3E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EAE75B482ADE9A4C00680B3E /* MenuVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuVC.swift; sourceTree = "<group>"; };
 		EAE75B4F2ADEADAC00680B3E /* GameVС.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameVС.swift"; sourceTree = "<group>"; };
+		EAE75B512ADEC8BE00680B3E /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +94,7 @@
 		EAE75B442ADE999C00680B3E /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				EAE75B512ADEC8BE00680B3E /* GameViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -196,6 +199,7 @@
 				EAE75B502ADEADAC00680B3E /* GameVС.swift in Sources */,
 				EAE75B492ADE9A4C00680B3E /* MenuVC.swift in Sources */,
 				EAE75B2F2ADE7D6900680B3E /* AppDelegate.swift in Sources */,
+				EAE75B522ADEC8BE00680B3E /* GameViewModel.swift in Sources */,
 				EAE75B312ADE7D6900680B3E /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

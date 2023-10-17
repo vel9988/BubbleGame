@@ -71,7 +71,8 @@ class MenuVC: UIViewController {
     
     //MARK: Method
     @objc private func startGameTapped() {
-        // Здесь будет код для перехода к экрану игры
+        let vc = GameVC()
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc private func privacyPolicyTapped() {
