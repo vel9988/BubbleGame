@@ -15,6 +15,7 @@
 		EAE75B4C2ADE9B3100680B3E /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = EAE75B4B2ADE9B3100680B3E /* SnapKit */; };
 		EAE75B502ADEADAC00680B3E /* GameVС.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE75B4F2ADEADAC00680B3E /* GameVС.swift */; };
 		EAE75B522ADEC8BE00680B3E /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE75B512ADEC8BE00680B3E /* GameViewModel.swift */; };
+		EAE75B542ADEEC1D00680B3E /* BubbleAnimationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE75B532ADEEC1D00680B3E /* BubbleAnimationInfo.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		EAE75B482ADE9A4C00680B3E /* MenuVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuVC.swift; sourceTree = "<group>"; };
 		EAE75B4F2ADEADAC00680B3E /* GameVС.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameVС.swift"; sourceTree = "<group>"; };
 		EAE75B512ADEC8BE00680B3E /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
+		EAE75B532ADEEC1D00680B3E /* BubbleAnimationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BubbleAnimationInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +80,7 @@
 		EAE75B422ADE998C00680B3E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				EAE75B532ADEEC1D00680B3E /* BubbleAnimationInfo.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -196,6 +199,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAE75B542ADEEC1D00680B3E /* BubbleAnimationInfo.swift in Sources */,
 				EAE75B502ADEADAC00680B3E /* GameVС.swift in Sources */,
 				EAE75B492ADE9A4C00680B3E /* MenuVC.swift in Sources */,
 				EAE75B2F2ADE7D6900680B3E /* AppDelegate.swift in Sources */,

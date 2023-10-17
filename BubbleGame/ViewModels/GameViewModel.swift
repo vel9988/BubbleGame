@@ -13,6 +13,10 @@ enum BubbleType: Int {
     case green = 3
 }
 
+enum ScreenSide {
+    case top, bottom, left, right
+}
+
 final class GameViewModel {
     
     var secondsRemaining: Double = 60.0
@@ -28,5 +32,10 @@ final class GameViewModel {
 
     func isTimeOver() -> Bool {
         return secondsRemaining <= 0
+    }
+    
+    func randomScreenSide() -> ScreenSide {
+        let sides: [ScreenSide] = [.top, .bottom, .left, .right]
+        return sides[Int.random(in: 0..<sides.count)]
     }
 }

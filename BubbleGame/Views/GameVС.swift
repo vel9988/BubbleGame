@@ -10,6 +10,15 @@ import UIKit
 class GameVC: UIViewController {
     
     //MARK: Property
+    
+    private var animations: [BubbleAnimationInfo] = []
+    
+    private var animationDuration: TimeInterval = 5.0
+    private var animationStartTime: CFTimeInterval?
+    private var bubbleStartPoint: CGPoint?
+    private var bubbleEndPoint: CGPoint?
+    private var currentAnimatingBubble: UIImageView?
+    
     private var stripWidth: CGFloat = 0
     
     var secondsRemaining = 60.0
@@ -85,7 +94,7 @@ class GameVC: UIViewController {
     }
     
     private func setupNavBar() {
-//        navigationItem.hidesBackButton = true
+        navigationItem.hidesBackButton = true
 //        let homeButton = UIImage(named: "HomeButton")
 //        let customBackButton = UIBarButtonItem(image: homeButton, style: .done, target: self, action: nil)
 //        self.navigationItem.leftBarButtonItem = customBackButton
@@ -136,7 +145,7 @@ class GameVC: UIViewController {
         
         elapsedSeconds += 1
         
-        if elapsedSeconds % 5 == 0 {
+        if elapsedSeconds % 3 == 0 {
             createRandomEnemyBubble()
         }
         
@@ -179,74 +188,91 @@ class GameVC: UIViewController {
     @objc private func handleBubbleTap(_ recognizer: UITapGestureRecognizer) {
         guard let tappedCircle = recognizer.view else { return }
 
-        tappedCircle.removeFromSuperview()
-//        tappedCircle.tag -= 1
-//
-//        if tappedCircle.tag == 0 {
-//            tappedCircle.removeFromSuperview()
-//        }
+        tappedCircle.tag -= 1
+
+        if tappedCircle.tag == 0 {
+            tappedCircle.removeFromSuperview()
+        }
     }
     
     private func createEnemyBubble(ofType type: BubbleType) -> UIImageView {
         let bubble = UIImageView()
+        
         switch type {
         case .blue:
             bubble.image = UIImage(named: "BlueBubble")
-            bubble.frame = CGRect(x: Int.random(in: 0..<Int(view.bounds.width)), y: 0, width: 25, height: 25)
-            bubble.isUserInteractionEnabled = true
+            bubble.frame.size = CGSize(width: 25, height: 25)
             bubble.tag = 1
         case .red:
             bubble.image = UIImage(named: "RedBubble")
-            bubble.frame = CGRect(x: Int.random(in: 0..<Int(view.bounds.width)), y: 0, width: 50, height: 50)
-            bubble.isUserInteractionEnabled = true
+            bubble.frame.size = CGSize(width: 50, height: 50)
             bubble.tag = 2
         case .green:
             bubble.image = UIImage(named: "GreenBubble")
-            bubble.frame = CGRect(x: Int.random(in: 0..<Int(view.bounds.width)), y: 0, width: 75, height: 75)
-            bubble.isUserInteractionEnabled = true
+            bubble.frame.size = CGSize(width: 75, height: 75)
             bubble.tag = 3
         }
         
+        let side = viewModel.randomScreenSide()
+        switch side {
+        case .top:
+            bubble.frame.origin.x = CGFloat.random(in: 0..<view.bounds.width)
+            bubble.frame.origin.y = -bubble.frame.size.height
+        case .left:
+            bubble.frame.origin.x = -bubble.frame.size.width
+            bubble.frame.origin.y = CGFloat.random(in: 0..<view.bounds.height)
+        case .right:
+            bubble.frame.origin.x = view.bounds.width
+            bubble.frame.origin.y = CGFloat.random(in: 0..<view.bounds.height)
+        case .bottom:
+            bubble.frame.origin.x = CGFloat.random(in: 0..<view.bounds.width)
+            bubble.frame.origin.y = view.bounds.height
+        }
+        
+        bubble.isUserInteractionEnabled = true
         return bubble
     }
     
-//    private func animateBubbleToCenter(_ bubble: UIImageView) {
-//        let path = UIBezierPath()
-//        path.move(to: bubble.center)
-//        let endPosition = CGPoint(x: view.center.x, y: view.center.y)
-//        path.addLine(to: endPosition)
-//        let moveAnimation = CAKeyframeAnimation(keyPath: "position")
-//        moveAnimation.path = path.cgPath
-//        moveAnimation.duration = 5.0
-//        moveAnimation.fillMode = .forwards
-//        moveAnimation.isRemovedOnCompletion = false
-//        moveAnimation.delegate = self
-//        bubble.layer.add(moveAnimation, forKey: "moveToCenter")
-//    }
-    
     private func animateBubbleToCenter(_ bubble: UIImageView) {
-//        UIView.animate(withDuration: 5.0, animations: {
-//            bubble.center = self.view.center
-//        }) { (completed) in
-//            if completed {
-//                // Здесь вы можете выполнить любой дополнительный код после завершения анимации, если это необходимо.
-//            }
-//        }
-        
-//        UIView.animate(withDuration: 5.0, delay: 0, options: [.allowUserInteraction], animations: {
-//                bubble.center = self.view.center
-//            }, completion: nil)
-        
-        UIView.animate(withDuration: 5.0, delay: 0, options: [.allowUserInteraction], animations: {
-                bubble.center = self.view.center
-            }, completion: nil)
+        let startPoint = bubble.center
+        let endPoint = self.view.center
+        let displayLink = CADisplayLink(target: self, selector: #selector(handleDisplayLinkAnimation))
+        displayLink.preferredFramesPerSecond = 60
+        displayLink.add(to: .current, forMode: .default)
+
+        let animationInfo = BubbleAnimationInfo(startPoint: startPoint, endPoint: endPoint, bubble: bubble, displayLink: displayLink, startTime: CACurrentMediaTime())
+        animations.append(animationInfo)
+    }
+
+    @objc private func handleDisplayLinkAnimation() {
+        for (index, animation) in animations.enumerated().reversed() {
+            guard let bubble = animation.bubble else {
+                stopBubbleAnimation(at: index)
+                continue
+            }
+
+            let elapsedTime = CACurrentMediaTime() - animation.startTime
+            if elapsedTime >= animationDuration {
+                stopBubbleAnimation(at: index)
+                continue
+            }
+
+            let progress = elapsedTime / animationDuration
+            let newX = animation.startPoint.x + (animation.endPoint.x - animation.startPoint.x) * CGFloat(progress)
+            let newY = animation.startPoint.y + (animation.endPoint.y - animation.startPoint.y) * CGFloat(progress)
+            bubble.center = CGPoint(x: newX, y: newY)
+        }
+    }
+    
+    private func stopBubbleAnimation(at index: Int) {
+        animations[index].displayLink.invalidate()
+        animations.remove(at: index)
+        animationStartTime = nil
+        bubbleStartPoint = nil
+        bubbleEndPoint = nil
+        currentAnimatingBubble = nil
     }
 
 }
 
-//MARK: - CAAnimationDelegate
-extension GameVC: CAAnimationDelegate {
-    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        // Логика завершения анимации
-    }
-}
+
