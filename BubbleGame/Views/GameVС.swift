@@ -37,6 +37,8 @@ class GameVC: UIViewController {
     
     var heartImageViews: [UIImageView] = []
     
+    var hasExecutedGameOver = false
+    
     //MARK: Subviews
     private let backgroundImageView: UIImageView = {
         let imageView = UIImageView()
@@ -172,7 +174,7 @@ class GameVC: UIViewController {
         }
         
         containerHeartView.snp.makeConstraints { make in
-            make.centerX.equalTo(mainBubbleImageView).offset(-40)
+            make.centerX.equalTo(mainBubbleImageView).offset(-45)
             make.centerY.equalTo(mainBubbleImageView)
         }
         
@@ -198,7 +200,7 @@ class GameVC: UIViewController {
         
         elapsedSeconds += 1
         
-        if elapsedSeconds % 5 == 0 {
+        if elapsedSeconds % 1 == 0 {
             createRandomEnemyBubble()
         }
         
@@ -209,6 +211,11 @@ class GameVC: UIViewController {
             youWinImageView.frame.size = view.bounds.size
             youWinImageView.center = view.center
             view.addSubview(youWinImageView)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+                let vc = NotificationVC()
+                self?.navigationController?.pushViewController(vc, animated: true)
+            }
         }
         
     }
@@ -339,13 +346,20 @@ class GameVC: UIViewController {
             heartImageViews[currentLives].image = emptyHeartImage
         }
 
-        if currentLives == 0 {
+        if currentLives == 0 && !hasExecutedGameOver {
             timer?.invalidate()
             timer = nil
             
             gameOverImageView.frame.size = view.bounds.size
             gameOverImageView.center = view.center
             view.addSubview(gameOverImageView)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+                let vc = NotificationVC()
+                self?.navigationController?.pushViewController(vc, animated: true)
+            }
+            
+            hasExecutedGameOver = true
         }
     }
 

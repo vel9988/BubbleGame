@@ -56,15 +56,15 @@ class MenuVC: UIViewController {
         startGameButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().offset(110)
-            make.width.equalTo(97)
-            make.height.equalTo(35)
+            make.width.equalTo(146)
+            make.height.equalTo(53)
         }
         
         privacyPolicyButton.snp.makeConstraints { make in
             make.centerX.equalTo(startGameButton)
             make.top.equalTo(startGameButton.snp.bottom).offset(20)
-            make.width.equalTo(97)
-            make.height.equalTo(35)
+            make.width.equalTo(146)
+            make.height.equalTo(53)
         }
 
     }
