@@ -19,8 +19,10 @@ enum ScreenSide {
 
 final class GameViewModel {
         
+    //MARK: Property
     var secondsRemaining: Double = 60.0
 
+    //MARK: Method
     func reduceTime() {
         secondsRemaining -= 1.0
     }

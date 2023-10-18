@@ -10,36 +10,25 @@ import UIKit
 class GameVC: UIViewController {
     
     //MARK: Property
-    
+    let viewModel = GameViewModel()
     private var animations: [BubbleAnimationInfo] = []
-    
     private var animationDuration: TimeInterval = 5.0
-    private var animationStartTime: CFTimeInterval?
-    private var bubbleStartPoint: CGPoint?
-    private var bubbleEndPoint: CGPoint?
-    private var currentAnimatingBubble: UIImageView?
-    
     private var stripWidth: CGFloat = 0
     
     var currentLives = 4
-    
     var secondsRemaining = 60.0
     let timerInterval = 1.0
-    
     var elapsedSeconds = 0
-
     var timer: Timer?
-    
-    let viewModel = GameViewModel()
-    
-    let fullHeartImage = UIImage(named: "FullHeart")
-    let emptyHeartImage = UIImage(named: "EmptyHeart")
     
     var heartImageViews: [UIImageView] = []
     
     var hasExecutedGameOver = false
     
     //MARK: Subviews
+    private let fullHeartImage = UIImage(named: "FullHeart")
+    private let emptyHeartImage = UIImage(named: "EmptyHeart")
+    
     private let backgroundImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "GamePlay")
@@ -192,7 +181,6 @@ class GameVC: UIViewController {
     //MARK: Method
     private func startTimer() {
         timer = Timer.scheduledTimer(timeInterval: timerInterval, target: self, selector: #selector(handleTimer), userInfo: nil, repeats: true)
-        
     }
     
     @objc private func handleTimer() {
@@ -334,10 +322,6 @@ class GameVC: UIViewController {
     private func stopBubbleAnimation(at index: Int) {
         animations[index].displayLink.invalidate()
         animations.remove(at: index)
-        animationStartTime = nil
-        bubbleStartPoint = nil
-        bubbleEndPoint = nil
-        currentAnimatingBubble = nil
     }
     
     func decreaseLife() {
