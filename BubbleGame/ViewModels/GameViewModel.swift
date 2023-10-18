@@ -18,13 +18,8 @@ enum ScreenSide {
 }
 
 final class GameViewModel {
-    
+        
     var secondsRemaining: Double = 60.0
-
-//    func getEnemyCircleType() -> CircleType {
-//        // Логика выбора типа кружка
-//        // Например, случайный выбор
-//    }
 
     func reduceTime() {
         secondsRemaining -= 1.0

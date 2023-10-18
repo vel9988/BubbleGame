@@ -21,6 +21,8 @@ class GameVC: UIViewController {
     
     private var stripWidth: CGFloat = 0
     
+    var currentLives = 4
+    
     var secondsRemaining = 60.0
     let timerInterval = 1.0
     
@@ -29,6 +31,11 @@ class GameVC: UIViewController {
     var timer: Timer?
     
     let viewModel = GameViewModel()
+    
+    let fullHeartImage = UIImage(named: "FullHeart")
+    let emptyHeartImage = UIImage(named: "EmptyHeart")
+    
+    var heartImageViews: [UIImageView] = []
     
     //MARK: Subviews
     private let backgroundImageView: UIImageView = {
@@ -57,9 +64,33 @@ class GameVC: UIViewController {
         return imageView
     }()
     
+    private let liveImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "Live")
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
     private let mainBubbleImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "MainBubble")
+        return imageView
+    }()
+    
+    private let containerHeartView: UIView = {
+        let view = UIView()
+        return view
+    }()
+    
+    let gameOverImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "GameOver"))
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
+    
+    let youWinImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "YouWin"))
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
 
@@ -87,10 +118,13 @@ class GameVC: UIViewController {
         view.addSubview(timeLineImageView)
         view.addSubview(timeImageView)
         view.addSubview(mainBubbleImageView)
+        view.addSubview(liveImageView)
+        view.addSubview(containerHeartView)
         
         stripWidth = self.view.frame.width - 40
         
-
+        setupContainerHeartView()
+        
     }
     
     private func setupNavBar() {
@@ -128,10 +162,29 @@ class GameVC: UIViewController {
         
         mainBubbleImageView.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()
-            make.height.width.equalTo(100)
+            make.height.width.equalTo(140)
         }
-
-
+        
+        liveImageView.snp.makeConstraints { make in
+            make.centerX.equalTo(mainBubbleImageView)
+            make.centerY.equalTo(mainBubbleImageView).offset(-30)
+            make.height.equalTo(15)
+        }
+        
+        containerHeartView.snp.makeConstraints { make in
+            make.centerX.equalTo(mainBubbleImageView).offset(-40)
+            make.centerY.equalTo(mainBubbleImageView)
+        }
+        
+    }
+    
+    private func setupContainerHeartView() {
+        for i in 0..<currentLives {
+            let heartImageView = UIImageView(image: fullHeartImage)
+            heartImageView.frame = CGRect(x: 0 + i * 25, y: 0, width: 20, height: 20)
+            heartImageViews.append(heartImageView)
+            containerHeartView.addSubview(heartImageView)
+        }
     }
     
     //MARK: Method
@@ -145,8 +198,17 @@ class GameVC: UIViewController {
         
         elapsedSeconds += 1
         
-        if elapsedSeconds % 3 == 0 {
+        if elapsedSeconds % 5 == 0 {
             createRandomEnemyBubble()
+        }
+        
+        if viewModel.isTimeOver() {
+            timer?.invalidate()
+            timer = nil
+            
+            youWinImageView.frame.size = view.bounds.size
+            youWinImageView.center = view.center
+            view.addSubview(youWinImageView)
         }
         
     }
@@ -167,17 +229,9 @@ class GameVC: UIViewController {
     private func updateProgressBar() {
         viewModel.reduceTime()
         
-        if viewModel.isTimeOver() {
-            timer?.invalidate()
-            timer = nil
-            timeLineImageView.snp.updateConstraints { (make) in
-                make.width.equalTo(0)
-            }
-        } else {
-            let percentageWidth = (viewModel.secondsRemaining / 60.0) * Double(view.frame.size.width - 40)
-            timeLineImageView.snp.updateConstraints { (make) in
-                make.width.equalTo(percentageWidth)
-            }
+        let percentageWidth = (viewModel.secondsRemaining / 60.0) * Double(view.frame.size.width - 40)
+        timeLineImageView.snp.updateConstraints { (make) in
+            make.width.equalTo(percentageWidth)
         }
         
         UIView.animate(withDuration: timerInterval) {
@@ -261,6 +315,12 @@ class GameVC: UIViewController {
             let newX = animation.startPoint.x + (animation.endPoint.x - animation.startPoint.x) * CGFloat(progress)
             let newY = animation.startPoint.y + (animation.endPoint.y - animation.startPoint.y) * CGFloat(progress)
             bubble.center = CGPoint(x: newX, y: newY)
+            
+            let distanceToCenter = sqrt(pow(bubble.center.x - view.center.x, 2) + pow(bubble.center.y - view.center.y, 2))
+            if distanceToCenter < 70.0 {
+                bubble.removeFromSuperview()
+                decreaseLife()
+            }
         }
     }
     
@@ -271,6 +331,22 @@ class GameVC: UIViewController {
         bubbleStartPoint = nil
         bubbleEndPoint = nil
         currentAnimatingBubble = nil
+    }
+    
+    func decreaseLife() {
+        if currentLives > 0 {
+            currentLives -= 1
+            heartImageViews[currentLives].image = emptyHeartImage
+        }
+
+        if currentLives == 0 {
+            timer?.invalidate()
+            timer = nil
+            
+            gameOverImageView.frame.size = view.bounds.size
+            gameOverImageView.center = view.center
+            view.addSubview(gameOverImageView)
+        }
     }
 
 }
