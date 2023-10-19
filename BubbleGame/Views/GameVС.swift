@@ -183,19 +183,22 @@ class GameVC: UIViewController {
         navigationController?.popToRootViewController(animated: true)
     }
     
+    // Запуск таймера, который вызывает handleTimer каждую секунду
     private func startTimer() {
         timer = Timer.scheduledTimer(timeInterval: timerInterval, target: self, selector: #selector(handleTimer), userInfo: nil, repeats: true)
     }
     
     @objc private func handleTimer() {
+        // Обновление прогресса времени
         updateProgressBar()
         
+        // Увеличиваем счетчик прошедших секунд
         elapsedSeconds += 1
         
-        if elapsedSeconds % 1 == 0 {
-            createRandomEnemyBubble()
-        }
+        // Каждую секунду создаем случайный пузырь-врага
+        createRandomEnemyBubble()
         
+        // Проверяем, не истекло ли время игры
         if viewModel.isTimeOver() {
             timer?.invalidate()
             timer = nil
@@ -204,6 +207,7 @@ class GameVC: UIViewController {
             youWinImageView.center = view.center
             view.addSubview(youWinImageView)
             
+            // Переходим в NotificationVC после 3 секунд
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
                 let vc = NotificationVC()
                 self?.navigationController?.pushViewController(vc, animated: true)
@@ -213,6 +217,7 @@ class GameVC: UIViewController {
     }
     
     private func createRandomEnemyBubble() {
+        // Создаем пузырь случайного типа и анимируем его к центру экрана
         let bubbleTypes: [BubbleType] = [.blue, .red, .green]
         let randomType = bubbleTypes[Int.random(in: 0..<bubbleTypes.count)]
         let bubble = createEnemyBubble(ofType: randomType)
@@ -226,6 +231,7 @@ class GameVC: UIViewController {
     }
     
     private func updateProgressBar() {
+        // Уменьшаем время игры и обновляем вид прогресс-бара
         viewModel.reduceTime()
         
         let percentageWidth = (viewModel.secondsRemaining / 60.0) * Double(view.frame.size.width - 40)
@@ -239,6 +245,7 @@ class GameVC: UIViewController {
     }
     
     @objc private func handleBubbleTap(_ recognizer: UITapGestureRecognizer) {
+        // Обрабатываем нажатие на пузырь: уменьшаем тэг, и если он равен 0, удаляем пузырь
         guard let tappedCircle = recognizer.view else { return }
 
         tappedCircle.tag -= 1
@@ -249,6 +256,7 @@ class GameVC: UIViewController {
     }
     
     private func createEnemyBubble(ofType type: BubbleType) -> UIImageView {
+        // Создаем пузырь-врага определенного типа и устанавливаем его начальное положение на экране
         let bubble = UIImageView()
         
         switch type {
@@ -287,6 +295,7 @@ class GameVC: UIViewController {
     }
     
     private func animateBubbleToCenter(_ bubble: UIImageView) {
+        // Запускаем анимацию движения пузыря к центру экрана
         let startPoint = bubble.center
         let endPoint = self.view.center
         let displayLink = CADisplayLink(target: self, selector: #selector(handleDisplayLinkAnimation))
@@ -298,6 +307,7 @@ class GameVC: UIViewController {
     }
 
     @objc private func handleDisplayLinkAnimation() {
+        // Обновляем позицию пузыря на каждом кадре анимации и проверяем, не достиг ли он центра
         for (index, animation) in animations.enumerated().reversed() {
             guard let bubble = animation.bubble else {
                 stopBubbleAnimation(at: index)
@@ -324,11 +334,13 @@ class GameVC: UIViewController {
     }
     
     private func stopBubbleAnimation(at index: Int) {
+        // Останавливаем анимацию пузыря и удаляем его из списка активных анимаций
         animations[index].displayLink.invalidate()
         animations.remove(at: index)
     }
     
     func decreaseLife() {
+        // Уменьшаем количество оставшихся жизней и проверяем, не окончена ли игра
         if currentLives > 0 {
             currentLives -= 1
             heartImageViews[currentLives].image = emptyHeartImage
