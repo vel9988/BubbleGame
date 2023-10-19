@@ -10,11 +10,10 @@ import UIKit
 class GameVC: UIViewController {
     
     //MARK: Property
-    private let viewModel = GameViewModel()
-    private var animations: [BubbleAnimationInfo] = []
-    private var animationDuration: TimeInterval = 5.0
-    private var stripWidth: CGFloat = 0
+    var viewModel = GameViewModel()
     
+    private var animations: [BubbleAnimationInfo] = []
+    private var stripWidth: CGFloat = 0
     private var currentLives = 4
     private let timerInterval = 1.0
     private var elapsedSeconds = 0
@@ -83,7 +82,7 @@ class GameVC: UIViewController {
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
-
+    
     //MARK: LiveCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -306,12 +305,12 @@ class GameVC: UIViewController {
             }
 
             let elapsedTime = CACurrentMediaTime() - animation.startTime
-            if elapsedTime >= animationDuration {
+            if elapsedTime >= viewModel.animationDuration {
                 stopBubbleAnimation(at: index)
                 continue
             }
 
-            let progress = elapsedTime / animationDuration
+            let progress = elapsedTime / viewModel.animationDuration
             let newX = animation.startPoint.x + (animation.endPoint.x - animation.startPoint.x) * CGFloat(progress)
             let newY = animation.startPoint.y + (animation.endPoint.y - animation.startPoint.y) * CGFloat(progress)
             bubble.center = CGPoint(x: newX, y: newY)

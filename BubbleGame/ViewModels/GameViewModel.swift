@@ -21,6 +21,7 @@ final class GameViewModel {
         
     //MARK: Property
     var secondsRemaining: Double = 60.0
+    var animationDuration: TimeInterval = 5.0
 
     //MARK: Method
     func reduceTime() {
