@@ -113,7 +113,6 @@ class NotificationVC: UIViewController {
     }
     
     //MARK: Method
-
     @objc private func acceptTapped() {
         navigationController?.popToRootViewController(animated: true)
     }

@@ -10,20 +10,19 @@ import UIKit
 class GameVC: UIViewController {
     
     //MARK: Property
-    let viewModel = GameViewModel()
+    private let viewModel = GameViewModel()
     private var animations: [BubbleAnimationInfo] = []
     private var animationDuration: TimeInterval = 5.0
     private var stripWidth: CGFloat = 0
     
-    var currentLives = 4
-    var secondsRemaining = 60.0
-    let timerInterval = 1.0
-    var elapsedSeconds = 0
-    var timer: Timer?
+    private var currentLives = 4
+    private let timerInterval = 1.0
+    private var elapsedSeconds = 0
+    private var timer: Timer?
     
-    var heartImageViews: [UIImageView] = []
+    private var heartImageViews: [UIImageView] = []
     
-    var hasExecutedGameOver = false
+    private var hasExecutedGameOver = false
     
     //MARK: Subviews
     private let fullHeartImage = UIImage(named: "FullHeart")
@@ -120,10 +119,21 @@ class GameVC: UIViewController {
     
     private func setupNavBar() {
         navigationItem.hidesBackButton = true
-//        let homeButton = UIImage(named: "HomeButton")
-//        let customBackButton = UIBarButtonItem(image: homeButton, style: .done, target: self, action: nil)
-//        self.navigationItem.leftBarButtonItem = customBackButton
-        
+        let homeImage = UIImage(named: "HomeButton")
+        let homeButton = UIButton(type: .custom)
+        homeButton.setImage(homeImage, for: .normal)
+        homeButton.addTarget(self, action: #selector(homeButtonTapped), for: .touchUpInside)
+        let homeBarButton = UIBarButtonItem(customView: homeButton)
+        self.navigationItem.leftBarButtonItem = homeBarButton
+    }
+    
+    private func setupContainerHeartView() {
+        for i in 0..<currentLives {
+            let heartImageView = UIImageView(image: fullHeartImage)
+            heartImageView.frame = CGRect(x: 0 + i * 25, y: 0, width: 20, height: 20)
+            heartImageViews.append(heartImageView)
+            containerHeartView.addSubview(heartImageView)
+        }
     }
     
     private func getConstraints() {
@@ -169,16 +179,11 @@ class GameVC: UIViewController {
         
     }
     
-    private func setupContainerHeartView() {
-        for i in 0..<currentLives {
-            let heartImageView = UIImageView(image: fullHeartImage)
-            heartImageView.frame = CGRect(x: 0 + i * 25, y: 0, width: 20, height: 20)
-            heartImageViews.append(heartImageView)
-            containerHeartView.addSubview(heartImageView)
-        }
+    //MARK: Method
+    @objc private func homeButtonTapped() {
+        navigationController?.popToRootViewController(animated: true)
     }
     
-    //MARK: Method
     private func startTimer() {
         timer = Timer.scheduledTimer(timeInterval: timerInterval, target: self, selector: #selector(handleTimer), userInfo: nil, repeats: true)
     }
